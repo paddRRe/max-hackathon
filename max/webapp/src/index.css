@@ -7,7 +7,7 @@
 
 body {
   margin: 0;
-  font-family: var(--family-base, system-ui, sans-serif);
+  font-family: var(--family-base, system-ui, sans-serif), serif;
   background: var(--background-secondary, var(--background-primary, #f4f4f6));
   color: var(--text-primary, #111);
 }
@@ -109,7 +109,6 @@ input[type='range'] {
 .card {
   background: var(--background-card, var(--background-primary, #fff));
   border-radius: var(--radius);
-  /* Цвет полоски = ветка метро ближайшей станции */
   border-left: 6px solid var(--line, transparent);
   padding: 14px 16px;
   display: flex;
