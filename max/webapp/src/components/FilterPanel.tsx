@@ -64,7 +64,9 @@ export function FilterPanel({ value, onChange, weather, weatherAware, onWeatherA
           >
             −
           </Button>
-          <output aria-live="polite">{value.people}</output>
+          <output key={value.people} className="pop" aria-live="polite">
+            {value.people}
+          </output>
           <Button
             size="small"
             variant="secondary"

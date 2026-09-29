@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { Spinner, Typography } from '@maxhub/max-ui';
 import { fetchPlaces } from './api/places';
 import { suggestToChat } from './api/share';
@@ -91,8 +91,8 @@ export default function App() {
 
         {status !== 'error' && (
           <ul className="list">
-            {results.map((place) => (
-              <li key={place.id}>
+            {results.map((place, i) => (
+              <li key={place.id} style={{ '--i': Math.min(i, 8) } as CSSProperties}>
                 <PlaceCard place={place} fromStation={query.station} onSuggest={handleSuggest} />
               </li>
             ))}
@@ -106,8 +106,12 @@ export default function App() {
         )}
       </section>
 
-      <div className="toast" role="status" aria-live="polite">
-        {notice}
+      <div className="toast-region" role="status" aria-live="polite">
+        {notice && (
+          <div className="toast" key={notice}>
+            {notice}
+          </div>
+        )}
       </div>
     </main>
   );
