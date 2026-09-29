@@ -1,0 +1,8 @@
+/* Base styles. Component styling comes from @maxhub/max-ui. */
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+}
