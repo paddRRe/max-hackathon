@@ -1,8 +1,210 @@
-/* Base styles. Component styling comes from @maxhub/max-ui. */
+:root {
+  color-scheme: light dark;
+  --gap: 16px;
+  --radius: 16px;
+  --line-soft: color-mix(in srgb, var(--text-primary, #111) 12%, transparent);
+}
+
 body {
   margin: 0;
+  font-family: var(--family-base, system-ui, sans-serif);
+  background: var(--background-secondary, var(--background-primary, #f4f4f6));
+  color: var(--text-primary, #111);
 }
 
 #root {
   min-height: 100svh;
+}
+
+.app {
+  box-sizing: border-box;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 20px 16px calc(32px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+.app__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Фильтры */
+.filters {
+  background: var(--background-card, var(--background-primary, #fff));
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field--row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font: inherit;
+  font-size: 14px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line-soft);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--controls-active, #0077ff);
+  border-color: transparent;
+  color: var(--text-primary-inverse-static, #fff);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.stepper output {
+  min-width: 2ch;
+  text-align: center;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type='range'] {
+  width: 100%;
+  accent-color: var(--controls-active, #0077ff);
+}
+
+/* Список и карточки */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  background: var(--background-card, var(--background-primary, #fff));
+  border-radius: var(--radius);
+  /* Цвет полоски = ветка метро ближайшей станции */
+  border-left: 6px solid var(--line, transparent);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card__head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card__where {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metro {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.metro__dots {
+  display: inline-flex;
+  gap: 3px;
+}
+
+.metro__dots i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: block;
+}
+
+.tags {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tags li {
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--text-primary, #111) 7%, transparent);
+}
+
+.card__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.empty {
+  padding: 24px 8px;
+  text-align: center;
+}
+
+/* Уведомление */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  padding: 0 16px;
+  border-radius: 12px;
+  background: var(--text-primary, #111);
+  color: var(--background-primary, #fff);
+  font-size: 14px;
+}
+
+.toast:not(:empty) {
+  padding: 10px 16px;
+}
+
+.toast:empty {
+  display: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--controls-active, #0077ff);
+  outline-offset: 2px;
 }
