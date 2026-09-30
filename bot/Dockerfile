@@ -1,6 +1,9 @@
 # Stage 1: build the mini-app (Vite + React + TS)
 FROM node:22-alpine AS webapp-build
 WORKDIR /build/webapp
+# Адрес API, который фронт зашьёт в бандл. Пусто = фронт работает на демо-данных.
+ARG VITE_API_URL=""
+ENV VITE_API_URL=$VITE_API_URL
 COPY webapp/package.json webapp/package-lock.json ./
 RUN npm ci
 COPY webapp/ ./

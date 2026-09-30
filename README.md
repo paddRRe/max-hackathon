@@ -158,21 +158,21 @@ curl localhost:3000/health
 {"ok": true}
 ```
 
-3. Подборка мест старыми параметрами:
+3. Подборка мест параметрами фронта:
 
 ```bash
-curl "localhost:3000/api/places?categories=cafe&people=8"
+curl "localhost:3000/api/places?categories=food&people=4&station=Китай-город&radiusKm=3&indoorOnly=0"
 ```
 
-Ожидаемый результат: массив из одного места, `id` — `veranda-cafe`.
+Ожидаемый результат: массив мест в форме фронта (`category`, `metro`, `maxGroup`, `blurb`, `price`, `distanceKm`), отсортирован по расстоянию.
 
-4. Новые фильтры:
+4. Другие фильтры:
 
 ```bash
 curl "localhost:3000/api/places?priceMax=1&sort=rating"
 ```
 
-Ожидаемый результат: только места с `priceLevel` 1, первым — с наивысшим `rating`.
+Ожидаемый результат: только места с `price` 1, первым — с наивысшим `rating` (поле внутренней модели, в ответе его нет).
 
 5. Неверный параметр:
 

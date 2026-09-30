@@ -17,7 +17,7 @@ export const CATEGORY_LABELS_RU: Record<string, string> = {
   quest: 'Квест',
 };
 
-function haversineKm(aLat: number, aLon: number, bLat: number, bLon: number): number {
+export function haversineKm(aLat: number, aLon: number, bLat: number, bLon: number): number {
   const R = 6371;
   const dLat = ((bLat - aLat) * Math.PI) / 180;
   const dLon = ((bLon - aLon) * Math.PI) / 180;
