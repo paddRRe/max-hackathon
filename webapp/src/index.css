@@ -5,14 +5,25 @@
   --font-body: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Unbounded', 'Onest', system-ui, sans-serif;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --line-soft: color-mix(in srgb, var(--text-primary, #111) 12%, transparent);
 }
 
+/*
+  body находится ВНЕ <MaxUI>, поэтому переменных темы (--text-primary и др.)
+  здесь нет. Берём те же значения, что и MAX UI, и переключаем по той же
+  системной настройке, по которой MAX UI выбирает светлую/тёмную тему.
+*/
 body {
   margin: 0;
   font-family: var(--font-body);
-  background: var(--background-secondary, var(--background-primary, #f4f4f6));
-  color: var(--text-primary, #111);
+  background: #f5f7fa;
+  color: #060708;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #25262d;
+    color: #fff;
+  }
 }
 
 #root {
@@ -22,7 +33,10 @@ body {
 .app {
   --family-base: var(--font-body);
   --family-headers: var(--font-display);
+  /* Здесь (внутри <MaxUI>) переменные темы уже доступны */
+  --line-soft: color-mix(in srgb, var(--text-primary) 14%, transparent);
   font-family: var(--font-body);
+  color: var(--text-primary);
   box-sizing: border-box;
   max-width: 560px;
   margin: 0 auto;
@@ -30,6 +44,31 @@ body {
   display: flex;
   flex-direction: column;
   gap: var(--gap);
+  position: relative;
+  isolation: isolate;
+}
+
+/* Мягкое «северное сияние» за всем экраном: медленно плывёт, не мешает чтению */
+.app::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(38% 32% at 18% 12%, rgba(0, 122, 255, 0.22), transparent 70%),
+    radial-gradient(34% 30% at 86% 28%, rgba(138, 92, 255, 0.18), transparent 70%),
+    radial-gradient(40% 34% at 60% 92%, rgba(0, 200, 170, 0.14), transparent 70%);
+  animation: aurora 24s ease-in-out infinite alternate;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app::before {
+    background:
+      radial-gradient(38% 32% at 18% 12%, rgba(0, 122, 255, 0.32), transparent 70%),
+      radial-gradient(34% 30% at 86% 28%, rgba(138, 92, 255, 0.28), transparent 70%),
+      radial-gradient(40% 34% at 60% 92%, rgba(0, 200, 170, 0.18), transparent 70%);
+  }
 }
 
 .app__head {
@@ -49,6 +88,11 @@ body {
 .app__head > :first-child {
   font-size: clamp(28px, 8vw, 36px);
   line-height: 1.05;
+  background: linear-gradient(110deg, var(--text-primary) 35%, var(--controls-active, #007aff) 75%, #8a5cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 .card__head > :first-child {
@@ -57,9 +101,13 @@ body {
 }
 
 .filters {
-  background: var(--background-card, var(--background-primary, #fff));
-  border-radius: var(--radius);
-  padding: 16px;
+  background: color-mix(in srgb, var(--background-card, var(--background-primary, #fff)) 82%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--line-soft);
+  box-shadow: 0 12px 32px -18px rgba(20, 30, 60, 0.35);
+  border-radius: calc(var(--radius) + 4px);
+  padding: 18px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -91,13 +139,15 @@ body {
   padding: 8px 14px;
   border-radius: 999px;
   border: 1px solid var(--line-soft);
-  background: #2a303a;
-  color: inherit;
+  /* Цвета берём из темы MAX UI, а не жёстко: так чипы меняются вместе с темой */
+  background: var(--background-tertiary);
+  color: var(--text-primary);
   cursor: pointer;
   transition:
     background-color 0.25s var(--ease-out),
     border-color 0.25s var(--ease-out),
     color 0.25s var(--ease-out),
+    box-shadow 0.25s var(--ease-out),
     transform 0.2s var(--ease-out);
 }
 
@@ -105,15 +155,20 @@ body {
   transform: scale(0.94);
 }
 
-.chip:hover {
-  background-color: #354a67;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+@media (hover: hover) {
+  .chip:hover {
+    background-color: color-mix(in srgb, var(--text-primary) 12%, transparent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 }
 
-.chip[aria-pressed='true'] {
-  background: var(--controls-active, #0077ff);
+/* Стоит после :hover, чтобы выбранный чип не терял свой цвет при наведении */
+.chip[aria-pressed='true'],
+.chip[aria-pressed='true']:hover {
+  background: linear-gradient(135deg, var(--controls-active, #007aff), color-mix(in srgb, var(--controls-active, #007aff) 55%, #8a5cff));
   border-color: transparent;
   color: var(--text-primary-inverse-static, #fff);
+  box-shadow: 0 6px 16px -6px color-mix(in srgb, var(--controls-active, #007aff) 75%, transparent);
 }
 
 .stepper {
@@ -132,6 +187,40 @@ body {
 input[type='range'] {
   width: 100%;
   accent-color: var(--controls-active, #0077ff);
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line-soft);
+  outline-offset: 6px;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--controls-active, #007aff);
+  border: 3px solid var(--background-card, #fff);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--controls-active, #007aff) 60%, transparent);
+  transition: transform 0.2s var(--ease-out);
+}
+
+input[type='range']::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--controls-active, #007aff);
+  border: 3px solid var(--background-card, #fff);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--controls-active, #007aff) 60%, transparent);
+}
+
+input[type='range']:active::-webkit-slider-thumb {
+  transform: scale(1.2);
+}
+
+input[type='range']:disabled {
+  opacity: 0.45;
 }
 
 /* Список и карточки */
@@ -145,8 +234,11 @@ input[type='range'] {
 }
 
 .card {
-  background: var(--background-card, var(--background-primary, #fff));
+  background:
+    linear-gradient(100deg, color-mix(in srgb, var(--line, transparent) 12%, transparent), transparent 45%),
+    var(--background-card, var(--background-primary, #fff));
   border-radius: var(--radius);
+  box-shadow: 0 8px 24px -18px rgba(20, 30, 60, 0.4);
   border-left: 6px solid var(--line, transparent);
   padding: 14px 16px;
   display: flex;
@@ -199,6 +291,7 @@ input[type='range'] {
   height: 12px;
   border-radius: 50%;
   display: block;
+  box-shadow: 0 0 0 2px var(--background-card, #fff);
   transition: transform 0.3s var(--ease-out);
 }
 
@@ -221,13 +314,23 @@ input[type='range'] {
   font-size: 13px;
   padding: 4px 10px;
   border-radius: 8px;
-  background: color-mix(in srgb, var(--text-primary, #111) 7%, transparent);
+  background: color-mix(in srgb, var(--text-primary) 7%, transparent);
+}
+
+.tags li:first-child {
+  color: var(--controls-active, #007aff);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--controls-active, #007aff) 12%, transparent);
 }
 
 .card__actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.card__actions > :last-child {
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--controls-active, #007aff) 80%, transparent);
 }
 
 .center {
@@ -256,8 +359,11 @@ input[type='range'] {
   max-width: 100%;
   padding: 10px 16px;
   border-radius: 12px;
-  background: var(--text-primary, #111);
+  background: color-mix(in srgb, var(--text-primary, #111) 92%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   color: var(--background-primary, #fff);
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.5);
   font-size: 14px;
   animation:
     toast-in 0.4s var(--ease-out) both,
@@ -277,6 +383,15 @@ input[type='range'] {
 
 .app button:not(.chip):active:not(:disabled) {
   transform: scale(0.95);
+}
+
+@keyframes aurora {
+  from {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(3%, 3%, 0) scale(1.08);
+  }
 }
 
 @keyframes rise {
@@ -315,6 +430,10 @@ input[type='range'] {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .app::before {
+    animation: none;
+  }
+
   *,
   *::before,
   *::after {
