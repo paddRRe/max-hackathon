@@ -66,6 +66,7 @@ export default function App() {
       <header className="app__head">
         <Typography.Headline>Куда пойдём?</Typography.Headline>
         <Typography.Body>Подберите место для встречи в Москве и отправьте друзьям.</Typography.Body>
+        <img className="brand-logo" src="/logo.png" alt="" width={56} height={56} />
       </header>
 
       <FilterPanel

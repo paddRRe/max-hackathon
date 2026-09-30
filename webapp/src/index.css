@@ -75,7 +75,22 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  position: relative;
+  padding-right: 72px; /* место под логотип */
   animation: rise 0.7s var(--ease-out) both;
+}
+
+.brand-logo {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  box-shadow:
+    0 10px 24px -10px color-mix(in srgb, var(--controls-active, #007aff) 55%, rgba(20, 30, 60, 0.5)),
+    0 0 0 1px var(--line-soft);
+  animation: logo-in 0.8s 0.15s var(--ease-out) both;
 }
 
 .app__head > :first-child,
@@ -391,6 +406,13 @@ input[type='range']:disabled {
   }
   to {
     transform: translate3d(3%, 3%, 0) scale(1.08);
+  }
+}
+
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6) rotate(-12deg);
   }
 }
 
