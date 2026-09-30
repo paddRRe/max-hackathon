@@ -1,5 +1,5 @@
-// Shared contract of the places data layer.
-// IMPORTANT: keep in sync with webapp/src/types/places.ts.
+// Контракт слоя мест: какие поля отдаёт /api/places.
+// Старые поля не переименовываем и не удаляем — их ждёт текущий фронт.
 
 /** Category slugs (UI labels live on the frontend). */
 export type PlaceCategory =
@@ -30,6 +30,12 @@ export interface PlaceResult {
   indoor: boolean;
   priceLevel?: 1 | 2 | 3;
   openHours?: string;
+  /** Район города, например «Тверской». */
+  district?: string;
+  /** Оценка места от 0 до 5 (для сортировки). */
+  rating?: number;
+  /** Ссылки на карты. */
+  mapLinks?: { yandex?: string; gis?: string };
 }
 
 /** Filters accepted by GET /api/places (all optional). */
@@ -44,6 +50,14 @@ export interface PlacesQuery {
   radiusKm?: number;
   /** When true, only indoor places match. */
   indoorOnly?: boolean;
+  /** Max price level (places with priceLevel <= priceMax match). */
+  priceMax?: number;
+  /** City district, exact match. */
+  district?: string;
+  /** When true, only places open right now match. */
+  openNow?: boolean;
+  /** Sort results: rating (best first), price (cheapest first), name (A-Z). */
+  sort?: 'rating' | 'price' | 'name';
 }
 
 export interface SuggestRequest {
@@ -52,4 +66,12 @@ export interface SuggestRequest {
   chatId: number;
   /** MAX Bridge initData of the user (reserved for validation, see TODO). */
   initData?: string;
+}
+
+/** Body of POST /api/poll: start a vote for 2-3 places in a chat. */
+export interface PollCreateRequest {
+  chatId: number;
+  placeIds: string[];
+  /** How many people should vote; when all voted, the bot announces the winner. */
+  expectedVoters?: number;
 }

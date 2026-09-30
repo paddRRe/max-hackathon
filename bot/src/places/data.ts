@@ -1,10 +1,9 @@
 import type { PlaceResult } from './types';
 
-// Seed dataset (Moscow). Demo data for the hackathon starter:
-// replace with a real database when the product scenario is fixed.
-// TODO(data): move to a real storage (Postgres/SQLite) + admin import.
+// Демо-датасет (Москва). Для хакатона хватает, потом — нормальное хранилище.
+// TODO(data): переехать на Postgres/SQLite + импорт из админки.
 
-/** Metro stations used for the station+radius filter. */
+/** Станции метро для фильтра «станция + радиус». */
 export const STATIONS: Record<string, { lat: number; lon: number }> = {
   Tverskaya: { lat: 55.7636, lon: 37.6068 },
   Arbatskaya: { lat: 55.752, lon: 37.6006 },
@@ -14,7 +13,15 @@ export const STATIONS: Record<string, { lat: number; lon: number }> = {
   Novoslobodskaya: { lat: 55.7797, lon: 37.6023 },
   Taganskaya: { lat: 55.7415, lon: 37.654 },
   Paveletskaya: { lat: 55.7176, lon: 37.6342 },
+  Barrikadnaya: { lat: 55.7566, lon: 37.5814 },
 };
+
+function maps(lat: number, lon: number, name: string): { yandex: string; gis: string } {
+  return {
+    yandex: `https://yandex.ru/maps/?pt=${lon},${lat}&z=16&l=map`,
+    gis: `https://2gis.ru/moscow/search/${encodeURIComponent(name)}`,
+  };
+}
 
 export const PLACES: PlaceResult[] = [
   {
@@ -30,6 +37,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '08:00–23:00',
+    district: 'Тверской',
+    rating: 4.7,
+    mapLinks: maps(55.7645, 37.6075, 'Кофейня Зерно Тверская'),
   },
   {
     id: 'ugol-restaurant',
@@ -44,6 +54,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 3,
     openHours: '12:00–23:00',
+    district: 'Арбат',
+    rating: 4.5,
+    mapLinks: maps(55.7512, 37.5998, 'Ресторан Угол Арбат'),
   },
   {
     id: 'gorky-park',
@@ -58,6 +71,9 @@ export const PLACES: PlaceResult[] = [
     indoor: false,
     priceLevel: 1,
     openHours: 'круглосуточно',
+    district: 'Якиманка',
+    rating: 4.8,
+    mapLinks: maps(55.7331, 37.6021, 'Парк Горького пикниковая зона'),
   },
   {
     id: 'tochka-coworking',
@@ -72,6 +88,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '09:00–21:00',
+    district: 'Беговой',
+    rating: 4.4,
+    mapLinks: maps(55.7761, 37.5842, 'Коворкинг Точка Лесная'),
   },
   {
     id: 'probka-bar',
@@ -86,6 +105,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '16:00–02:00',
+    district: 'Басманный',
+    rating: 4.6,
+    mapLinks: maps(55.7591, 37.6241, 'Бар Пробка Маросейка'),
   },
   {
     id: 'labirint-quest',
@@ -100,6 +122,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '10:00–22:00',
+    district: 'Таганский',
+    rating: 4.3,
+    mapLinks: maps(55.7422, 37.6528, 'Квест Лабиринт Таганская'),
   },
   {
     id: 'golosa-karaoke',
@@ -114,6 +139,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 3,
     openHours: '18:00–06:00',
+    district: 'Тверской',
+    rating: 4.2,
+    mapLinks: maps(55.7803, 37.6031, 'Караоке Голоса Новослободская'),
   },
   {
     id: 'garage-museum',
@@ -128,6 +156,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '11:00–22:00',
+    district: 'Якиманка',
+    rating: 4.9,
+    mapLinks: maps(55.7368, 37.5952, 'Музей Гараж'),
   },
   {
     id: 'oktyabr-cinema',
@@ -142,6 +173,9 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '10:00–02:00',
+    district: 'Арбат',
+    rating: 4.5,
+    mapLinks: maps(55.7531, 37.6024, 'Кинотеатр Октябрь Новый Арбат'),
   },
   {
     id: 'rampa-skate',
@@ -156,6 +190,9 @@ export const PLACES: PlaceResult[] = [
     indoor: false,
     priceLevel: 1,
     openHours: '09:00–23:00',
+    district: 'Даниловский',
+    rating: 4.1,
+    mapLinks: maps(55.7169, 37.6388, 'Скейт-парк Рампа Дербеневская'),
   },
   {
     id: 'veranda-cafe',
@@ -170,6 +207,9 @@ export const PLACES: PlaceResult[] = [
     indoor: false,
     priceLevel: 2,
     openHours: '09:00–23:00',
+    district: 'Даниловский',
+    rating: 4.0,
+    mapLinks: maps(55.7183, 37.6329, 'Кафе Веранда Павелецкая'),
   },
   {
     id: 'atlant-gym',
@@ -184,5 +224,59 @@ export const PLACES: PlaceResult[] = [
     indoor: true,
     priceLevel: 2,
     openHours: '07:00–23:00',
+    district: 'Беговой',
+    rating: 4.4,
+    mapLinks: maps(55.778, 37.5801, 'Спортзал Атлант Ленинградский'),
+  },
+  {
+    id: 'mama-restaurant',
+    name: 'Ресторан «Мама»',
+    description: 'Домашняя кухня и большой стол на 12 гостей, детям — игровая.',
+    categories: ['restaurant'],
+    address: 'ул. Таганская, 3',
+    station: 'Taganskaya',
+    lat: 55.7401,
+    lon: 37.6512,
+    capacity: 12,
+    indoor: true,
+    priceLevel: 2,
+    openHours: '11:00–23:00',
+    district: 'Таганский',
+    rating: 4.6,
+    mapLinks: maps(55.7401, 37.6512, 'Ресторан Мама Таганская'),
+  },
+  {
+    id: 'krany-bar',
+    name: 'Бар «Краны»',
+    description: 'Пиво с кранов дешевле, чем везде; по пятницам живая музыка.',
+    categories: ['bar'],
+    address: 'ул. Сущёвская, 9',
+    station: 'Novoslobodskaya',
+    lat: 55.7812,
+    lon: 37.6044,
+    capacity: 10,
+    indoor: true,
+    priceLevel: 1,
+    openHours: '14:00–00:00',
+    district: 'Тверской',
+    rating: 4.3,
+    mapLinks: maps(55.7812, 37.6044, 'Бар Краны Сущёвская'),
+  },
+  {
+    id: 'planetarium',
+    name: 'Московский планетарий',
+    description: 'Звёздный зал и музей Урании; школьным группам — скидки.',
+    categories: ['museum'],
+    address: 'ул. Садовая-Кудринская, 5',
+    station: 'Barrikadnaya',
+    lat: 55.7572,
+    lon: 37.5831,
+    capacity: 40,
+    indoor: true,
+    priceLevel: 2,
+    openHours: '10:00–21:00',
+    district: 'Пресненский',
+    rating: 4.8,
+    mapLinks: maps(55.7572, 37.5831, 'Московский планетарий'),
   },
 ];

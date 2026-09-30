@@ -1,0 +1,22 @@
+# Зависимости
+node_modules/
+
+# Сборка
+dist/
+webapp/dist/
+bot/dist/
+bot/public/
+
+# Секреты и локальные настройки
+.env
+.env.local
+webapp/.env.local
+
+# Служебный мусор macOS / IDE
+.DS_Store
+__MACOSX/
+.idea/
+*.iml
+
+# Вложенная копия проекта (старый снапшот, не пушить)
+max/
