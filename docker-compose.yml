@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: bot/Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
     env_file: .env
     ports:
       - "${PORT:-3000}:${PORT:-3000}"

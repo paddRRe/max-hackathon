@@ -2,7 +2,7 @@ import { Router, type Request, type Response } from 'express';
 import { z } from 'zod';
 import { log } from '../logger';
 import { sendMessage } from '../max-api';
-import type { PlacesQuery } from './types';
+import { frontPlaces, type FrontQuery } from './front';
 import { polls } from './poll';
 import { announcePollWinner } from './announce';
 import { cardAttachments, filterPlaces, findPlace, renderCard } from './service';
@@ -47,7 +47,9 @@ function zodMessage(error: z.ZodError): string {
   }
 }
 
-// GET /api/places?categories=&people=&station=&radiusKm=&indoorOnly=&priceMax=&district=&openNow=&sort=
+// GET /api/places — ответ в форме фронта (webapp/src/types/places.ts).
+// Параметры те же, что шлёт фронт: categories (walk,food,...), people,
+// station (русское название), radiusKm, indoorOnly.
 placesRouter.get('/places', (req: Request, res: Response) => {
   const parsed = placesQuerySchema.safeParse(req.query);
   if (!parsed.success) {
@@ -55,7 +57,7 @@ placesRouter.get('/places', (req: Request, res: Response) => {
     return;
   }
   const q = parsed.data;
-  const query: PlacesQuery = {
+  const query: FrontQuery = {
     categories: q.categories,
     people: q.people,
     station: q.station,
@@ -67,7 +69,7 @@ placesRouter.get('/places', (req: Request, res: Response) => {
     sort: q.sort,
   };
   try {
-    res.json(filterPlaces(query));
+    res.json(frontPlaces(query));
   } catch (err) {
     res.status(400).json({ ok: false, error: (err as Error).message });
   }
@@ -75,7 +77,8 @@ placesRouter.get('/places', (req: Request, res: Response) => {
 
 const suggestSchema = z.object({
   placeId: z.string().min(1, 'укажите placeId'),
-  chatId: z.number().int('chatId должен быть целым числом'),
+  // Фронт шлёт chatId из Bridge, а вне чата — null. Без чата отправлять некуда.
+  chatId: z.number().int('chatId должен быть целым числом').nullable(),
   initData: z.string().optional(),
 });
 
@@ -87,6 +90,10 @@ placesRouter.post('/suggest', async (req: Request, res: Response) => {
     return;
   }
   const { placeId, chatId } = parsed.data;
+  if (chatId === null) {
+    res.status(400).json({ ok: false, error: 'откройте приложение из чата — без чата некуда отправлять' });
+    return;
+  }
 
   const place = findPlace(placeId);
   if (!place) {
